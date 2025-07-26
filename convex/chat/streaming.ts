@@ -23,7 +23,10 @@ export const streamOneShot = action({
     const { thread } = await agent.continueThread(ctx, { threadId });
     const result = await thread.streamText(
       { prompt },
-      { saveStreamDeltas: true },
+      { saveStreamDeltas: {
+        chunking: "word",
+        throttleMs: 500
+      } },
     );
     // We don't need to return anything, as the response is saved as deltas
     // in the database and clients are subscribed to the stream.
@@ -64,7 +67,7 @@ export const streamAsync = internalAction({
     const result = await thread.streamText(
       { promptMessageId },
       // more custom delta options (`true` uses defaults)
-      { saveStreamDeltas: { chunking: "word", throttleMs: 100 } },
+      { saveStreamDeltas: { chunking: "word", throttleMs: 1000 } },
     );
     // We need to make sure the stream finishes - by awaiting each chunk
     // or using this call to consume it all.
