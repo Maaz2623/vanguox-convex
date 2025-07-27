@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
 import { api } from "../../../../convex/_generated/api";
 import { MessageCard } from "./message-card";
+import { SyncLoader } from "react-spinners";
 
 interface Props {
   chatId: string;
@@ -71,7 +72,12 @@ export const MessagesList = ({ chatId }: Props) => {
         ))}
         {isLastMessageUser && (
           <div className="flex items-center justify-center size-10 mt-10 m-2">
-            Loading...
+            <SyncLoader
+              className="text-black"
+              size={6}
+              color={`#0000`}
+              margin={2}
+            />
           </div>
         )}
         {streamingMessage && (

@@ -67,7 +67,10 @@ export const streamAsync = internalAction({
     const result = await thread.streamText(
       { promptMessageId },
       // more custom delta options (`true` uses defaults)
-      { saveStreamDeltas: { chunking: "word", throttleMs: 1000 } },
+      { saveStreamDeltas: {
+        chunking: "word",
+        throttleMs: 250
+      } },
     );
     // We need to make sure the stream finishes - by awaiting each chunk
     // or using this call to consume it all.
@@ -131,9 +134,11 @@ export const listMessages = query({
  * To stream the result back over http, see the next example.
  */
 export const streamTextWithoutSavingDeltas = action({
-  args: { prompt: v.string() },
-  handler: async (ctx, { prompt }) => {
-    const { threadId, thread } = await agent.createThread(ctx, {});
+  args: { prompt: v.string(), threadId: v.string() },
+  handler: async (ctx, { prompt, threadId }) => {
+    const { thread } = await agent.continueThread(ctx, {
+      threadId: threadId
+    });
     const result = await thread.streamText({ prompt });
     for await (const chunk of result.textStream) {
       // do something with the chunks as they come in.
